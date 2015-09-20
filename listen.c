@@ -15,17 +15,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-char sip[20]="0.0.0.0",dip[20]="127.0.0.1";
+char sip[20]="127.0.0.1",dip[20]="127.0.0.1";
 unsigned short sport=22222u,dport=22u;
 //int lfd,cfd;/*listen file description and connect file description*/
 struct socktcp
 {
 	int sockfd;
-	union
-	{
-		struct sockaddr_in sockaddr_in;
-		struct sockaddr sockaddr;
-	};
+	struct sockaddr_in sockaddr_in;
 	socklen_t addrlen;
 };
 void tcpinit(struct socktcp *p,const char *ip,const unsigned short port)
@@ -48,7 +44,7 @@ void tcpreuseport(struct socktcp *p)
 }
 void tcpbind(struct socktcp *p)
 {
-	if(bind(p->sockfd,&p->sockaddr,p->addrlen)==-1)
+	if(bind(p->sockfd,(struct sockaddr*)&p->sockaddr_in,p->addrlen)==-1)
 	{
 		perror("bind error...");
 		exit(2);
@@ -66,7 +62,7 @@ void tcplisten(struct socktcp *p)
 }
 void tcpaccept(struct socktcp *p)
 {
-	p->sockfd=accept(p->sockfd,&p->sockaddr,&p->addrlen);
+	p->sockfd=accept(p->sockfd,(struct sockaddr*)&p->sockaddr_in,&p->addrlen);
 	if(p->sockfd==-1)
 	{
 		perror("accept error...");
