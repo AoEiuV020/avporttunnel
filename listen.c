@@ -4,26 +4,7 @@
 	^> Mail: 490674483@qq.com
 	^> Created Time: 2015/09/20 - 10:59:18
 ****************************************************/
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-#include <unistd.h>
-#include <errno.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-char sip[20]="127.0.0.1",dip[20]="127.0.0.1";
-unsigned short sport=22222u,dport=22u;
-//int lfd,cfd;/*listen file description and connect file description*/
-struct socktcp
-{
-	int sockfd;
-	struct sockaddr_in sockaddr_in;
-	socklen_t addrlen;
-};
+#include "global.h"
 void tcpinit(struct socktcp *p,const char *ip,const unsigned short port)
 {
 	p->sockaddr_in.sin_family=AF_INET;
@@ -41,6 +22,7 @@ void tcpreuseport(struct socktcp *p)
 		perror("etsockopt error");
 		exit(1);
 	}
+	printf("++++set reuse port ok++++\n");
 }
 void tcpbind(struct socktcp *p)
 {
@@ -74,28 +56,27 @@ void tcprecv(struct socktcp *p)
 {
 	unsigned char buf[512];
 	int len;
+	unsigned long total=0;
 	while((len=recv(p->sockfd,buf,sizeof(buf)-1,0))>0)
 	{
+		total+=len;
 		buf[len]=0;
 		printf("recv %d:%.*s;\n",len,len,buf);
 	}
+	printf("++++recv %ld ok++++\n",total);
 }
 void tcpclose(struct socktcp *p)
 {
 	close(p->sockfd);
 }
-int main(int argc, char **argv)
+int mylisten(int argc, char **argv)
 {
-	struct socktcp slisten,sconnect;
-	setuid(geteuid());/*4770*/
-	printf("---------%d <==> %d------\n",getuid(),geteuid());
-	printf("----%s:%hu -> %s:%hu----\n",sip,sport,dip,dport);
+	struct socktcp slisten;
+	printf("----listen %s:%hu----\n",sip,sport);
 	slisten.sockfd=socket(AF_INET,SOCK_STREAM,0);
-	sconnect.sockfd=socket(AF_INET,SOCK_STREAM,0);
-	printf("----sockfd:%d,%d----\n",slisten.sockfd,sconnect.sockfd);
+	printf("----sockfd:%d----\n",slisten.sockfd);
 	tcpreuseport(&slisten);
 	tcpinit(&slisten,sip,sport);
-	tcpinit(&sconnect,dip,dport);
 	tcpbind(&slisten);
 	tcplisten(&slisten);
 	tcpaccept(&slisten);

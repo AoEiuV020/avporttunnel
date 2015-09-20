@@ -1,28 +1,94 @@
-n=listen
-#######è‡ªåŠ¨åˆ¤æ–­æ“ä½œç³»ç»Ÿ
+#***************************************************
+#	^> File Name: multi.mk
+#	^> Author: AoEiuV020
+#	^> Mail: 490674483@qq.com
+#	^> Created Time: 2015/05/09
+#***************************************************
+#######×Ô¶¯±àÒëµ±Ç°ÎÄ¼þ¼ÐÏÂËùÓÐ.cpp£¬Éú³É.oºÍ¿ÉÖ´ÐÐÎÄ¼þ£¬
+#######Èç¹ûC=CCÔò±àÒë.c,
+#######Èç¹ûRELEASE=1ÔòÍ¬Ê±Éú³É¶ÔÓ¦.aºÍ.so,
+#######×Ô¶¯ÅÐ¶Ï²Ù×÷ÏµÍ³
 ifeq ($(shell uname 2>&1),Linux)
 	WINDOWS=0
 else
 	WINDOWS=1
 endif
-#######ä¸Šé¢æ˜¯åˆ¤æ–­ç³»ç»Ÿæ˜¯ä¸æ˜¯WINDOWS,å‡†ä¸å‡†æ— æ‰€è°“äº†ï¼Œèƒ½ç”¨å°±å¥½ã€‚ã€‚ã€‚
+#######ÉÏÃæÊÇÅÐ¶ÏÏµÍ³ÊÇ²»ÊÇWINDOWS,×¼²»×¼ÎÞËùÎ½ÁË£¬ÄÜÓÃ¾ÍºÃ¡£¡£¡£
 ifeq ($(WINDOWS),1)
-	PS=\\
-#PathSeparator
 	TAREXT=exe
 	RM=del /f
 else
-	PS=/
 	TAREXT=out
 	RM=rm -f
 endif
-#######ä¸Šé¢æ˜¯WINDOWSä¸ä¸€æ ·çš„åœ°æ–¹ã€‚ã€‚ã€‚
-$(n).$(TAREXT):$(n).c
-	gcc -Wall -std=c99 --save-temps -o $(n).$(TAREXT) $(n).c
-	#.$(PS)$(n).$(TAREXT)
-.PHONY:clean
-.IGNORE:clean
+#######ÉÏÃæÊÇWINDOWS²»Ò»ÑùµÄµØ·½¡£¡£¡£
+CC=gcc
+CXX=g++
+C=CC
+ifeq ($(C),CXX)
+	SRCEXT=cpp
+else
+	SRCEXT=c
+endif
+#######Õâ¸öC¾ö¶¨ÊÇc»¹ÊÇc++¡£¡£¡£
+ifeq ($(RELEASE),1)
+	RELEASELIB=liba libso
+else
+	RELEASE=0
+endif
+#######·¢ÐÐ°æ£¬°ÑËùÓÐ.o¶¼´ò°ü³É.aºÍ.so
+
+
+INCLUDES=-I.
+CFLAGS=-Wall -std=c99 -O2 -g $(INCLUDES)
+CXXFLAGS=-Wall -std=c++11 -O2 -g $(INCLUDES)
+LDFLAGS=-L.
+AR=ar
+ARFLAGS=rc
+#TARGET=$(notdir $(CURDIR)).$(TAREXT)
+TARGET=avportturnnel.$(TAREXT)
+SRCS=$(wildcard *.$(SRCEXT))
+OBJS=$(patsubst %.$(SRCEXT),%.o,$(SRCS))
+LIBS=
+HEARDER=global.h
+
+
+
+
+ECHO=echo $@:$? done...
+
+
+.PHONY:all liba libso clean
+
+
+all:$(TARGET) $(RELEASELIB)
+	@$(ECHO)
+
+
+$(TARGET):$(OBJS)
+	$($(C)) $^ $(LDFLAGS) $(LIBS) -o $@
+
+
+$(OBJS):%.o:%.$(SRCEXT) $(HEARDER)
+	$($(C)) -c $< $($(C)FLAGS) -o $@
+
+
+liba:$(OBJS:%.o=lib%.a)
+	@$(ECHO)
+
+
+libso:$(OBJS:%.o=lib%.so)
+	@$(ECHO)
+
+
+$(OBJS:%.o=lib%.a):lib%.a:%.o
+	-$(AR) $(ARFLAGS) $@ $^
+
+
+$(OBJS:%.o=lib%.so):lib%.so:%.o
+	-$($(C)) -shared $^ -o $@
+
+
 clean:
-	$(RM) *.i *.o *.s *.$(TAREXT)
-
-
+	-$(RM) $(OBJS) $(OBJS:%.o=lib%.a) $(OBJS:%.o=lib%.so) $(TARGET)
+	@$(ECHO)
