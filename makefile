@@ -4,16 +4,16 @@
 #	^> Mail: 490674483@qq.com
 #	^> Created Time: 2015/05/09
 #***************************************************
-#######×Ô¶¯±àÒëµ±Ç°ÎÄ¼þ¼ÐÏÂËùÓÐ.cpp£¬Éú³É.oºÍ¿ÉÖ´ÐÐÎÄ¼þ£¬
-#######Èç¹ûC=CCÔò±àÒë.c,
-#######Èç¹ûRELEASE=1ÔòÍ¬Ê±Éú³É¶ÔÓ¦.aºÍ.so,
-#######×Ô¶¯ÅÐ¶Ï²Ù×÷ÏµÍ³
+#######è‡ªåŠ¨ç¼–è¯‘å½“å‰æ–‡ä»¶å¤¹ä¸‹æ‰€æœ‰.cppï¼Œç”Ÿæˆ.oå’Œå¯æ‰§è¡Œæ–‡ä»¶ï¼Œ
+#######å¦‚æžœC=CCåˆ™ç¼–è¯‘.c,
+#######å¦‚æžœRELEASE=1åˆ™åŒæ—¶ç”Ÿæˆå¯¹åº”.aå’Œ.so,
+#######è‡ªåŠ¨åˆ¤æ–­æ“ä½œç³»ç»Ÿ
 ifeq ($(shell uname 2>&1),Linux)
 	WINDOWS=0
 else
 	WINDOWS=1
 endif
-#######ÉÏÃæÊÇÅÐ¶ÏÏµÍ³ÊÇ²»ÊÇWINDOWS,×¼²»×¼ÎÞËùÎ½ÁË£¬ÄÜÓÃ¾ÍºÃ¡£¡£¡£
+#######ä¸Šé¢æ˜¯åˆ¤æ–­ç³»ç»Ÿæ˜¯ä¸æ˜¯WINDOWS,å‡†ä¸å‡†æ— æ‰€è°“äº†ï¼Œèƒ½ç”¨å°±å¥½ã€‚ã€‚ã€‚
 ifeq ($(WINDOWS),1)
 	TAREXT=exe
 	RM=del /f
@@ -21,7 +21,7 @@ else
 	TAREXT=out
 	RM=rm -f
 endif
-#######ÉÏÃæÊÇWINDOWS²»Ò»ÑùµÄµØ·½¡£¡£¡£
+#######ä¸Šé¢æ˜¯WINDOWSä¸ä¸€æ ·çš„åœ°æ–¹ã€‚ã€‚ã€‚
 CC=gcc
 CXX=g++
 C=CC
@@ -30,13 +30,13 @@ ifeq ($(C),CXX)
 else
 	SRCEXT=c
 endif
-#######Õâ¸öC¾ö¶¨ÊÇc»¹ÊÇc++¡£¡£¡£
+#######è¿™ä¸ªCå†³å®šæ˜¯cè¿˜æ˜¯c++ã€‚ã€‚ã€‚
 ifeq ($(RELEASE),1)
 	RELEASELIB=liba libso
 else
 	RELEASE=0
 endif
-#######·¢ÐÐ°æ£¬°ÑËùÓÐ.o¶¼´ò°ü³É.aºÍ.so
+#######å‘è¡Œç‰ˆï¼ŒæŠŠæ‰€æœ‰.oéƒ½æ‰“åŒ…æˆ.aå’Œ.so
 
 
 INCLUDES=-I.
@@ -46,7 +46,7 @@ LDFLAGS=-L.
 AR=ar
 ARFLAGS=rc
 #TARGET=$(notdir $(CURDIR)).$(TAREXT)
-TARGET=avportturnnel.$(TAREXT)
+TARGET=avporttunnel.$(TAREXT)
 SRCS=$(wildcard *.$(SRCEXT))
 OBJS=$(patsubst %.$(SRCEXT),%.o,$(SRCS))
 LIBS=
