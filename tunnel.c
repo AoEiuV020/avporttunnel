@@ -7,14 +7,16 @@
 #include "global.h"
 int main(int argc, char **argv)
 {
-	snprintf(sip,sizeof(sip),"180.209.64.41");
+	pipe(pfd);
+	snprintf(sip,sizeof(sip),"127.0.0.1");
 	snprintf(dip,sizeof(dip),"127.0.0.1");
 	sport=22222u;
-	dport=22u;
+	dport=22222u;
+	info=stderr;
 	setuid(geteuid());/*4770*/
-	printf("---------%d <==> %d------\n",getuid(),geteuid());
-	printf("----%s:%hu -> %s:%hu----\n",sip,sport,dip,dport);
-	//mylisten(argc,argv);
-	myconnect(argc,argv);
+	fprintf(info,"---------%d <==> %d------\n",getuid(),geteuid());
+	fprintf(info,"----%s:%hu -> %s:%hu----\n",sip,sport,dip,dport);
+	mylisten();
+	//myconnect();
 	return 0;
 }

@@ -12,7 +12,7 @@ void tcpinit(struct socktcp *p,const char *ip,const unsigned short port)
 	p->sockaddr_in.sin_addr.s_addr=inet_addr(ip);
 	memset(p->sockaddr_in.sin_zero,0,8);
 	p->addrlen=sizeof(p->sockaddr_in);
-	printf("++++%p,%d,%hu,%u,%d++++\n",p,p->sockaddr_in.sin_family,p->sockaddr_in.sin_port,p->sockaddr_in.sin_addr.s_addr,p->addrlen);
+	fprintf(info,"++++%p,%d,%hu,%u,%d++++\n",p,p->sockaddr_in.sin_family,p->sockaddr_in.sin_port,p->sockaddr_in.sin_addr.s_addr,p->addrlen);
 }
 void tcpreuseport(struct socktcp *p)
 {
@@ -22,7 +22,7 @@ void tcpreuseport(struct socktcp *p)
 		perror("etsockopt error");
 		exit(1);
 	}
-	printf("++++set reuse port ok++++\n");
+	fprintf(info,"++++set reuse port ok++++\n");
 }
 void tcpbind(struct socktcp *p)
 {
@@ -31,7 +31,7 @@ void tcpbind(struct socktcp *p)
 		perror("bind error...");
 		exit(2);
 	}
-	printf("++++bind %u:%hu ok++++\n",p->sockaddr_in.sin_addr.s_addr,p->sockaddr_in.sin_port);
+	fprintf(info,"++++bind %u:%hu ok++++\n",p->sockaddr_in.sin_addr.s_addr,p->sockaddr_in.sin_port);
 }
 void tcplisten(struct socktcp *p)
 {
@@ -40,7 +40,7 @@ void tcplisten(struct socktcp *p)
 		perror("listen error...");
 		exit(3);
 	}
-	printf("++++listen ok++++\n");
+	fprintf(info,"++++listen ok++++\n");
 }
 void tcpaccept(struct socktcp *p)
 {
@@ -50,7 +50,7 @@ void tcpaccept(struct socktcp *p)
 		perror("accept error...");
 		exit(4);
 	}
-	printf("++++accept from %s:%hu++++\n",inet_ntoa(p->sockaddr_in.sin_addr),ntohs(p->sockaddr_in.sin_port));
+	fprintf(info,"++++accept from %s:%hu++++\n",inet_ntoa(p->sockaddr_in.sin_addr),ntohs(p->sockaddr_in.sin_port));
 }
 void tcprecv(struct socktcp *p)
 {
@@ -61,20 +61,20 @@ void tcprecv(struct socktcp *p)
 	{
 		total+=len;
 		buf[len]=0;
-		printf("recv %d:%.*s;\n",len,len,buf);
+		fprintf(info,"recv %d:%.*s;\n",len,len,buf);
 	}
-	printf("++++recv %ld ok++++\n",total);
+	fprintf(info,"++++recv %ld ok++++\n",total);
 }
 void tcpclose(struct socktcp *p)
 {
 	close(p->sockfd);
 }
-int mylisten(int argc, char **argv)
+int mylisten()
 {
 	struct socktcp slisten;
-	printf("----listen %s:%hu----\n",sip,sport);
+	fprintf(info,"----listen %s:%hu----\n",sip,sport);
 	slisten.sockfd=socket(AF_INET,SOCK_STREAM,0);
-	printf("----sockfd:%d----\n",slisten.sockfd);
+	fprintf(info,"----sockfd:%d----\n",slisten.sockfd);
 	tcpreuseport(&slisten);
 	tcpinit(&slisten,sip,sport);
 	tcpbind(&slisten);

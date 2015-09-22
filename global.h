@@ -16,14 +16,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <getopt.h>
 char sip[20],dip[20];
 unsigned short sport,dport;
+int pfd[2];
+FILE *info;
 struct socktcp
 {
 	int sockfd;
 	struct sockaddr_in sockaddr_in;
 	socklen_t addrlen;
 };
+void usage();
 void tcpinit(struct socktcp *p,const char *ip,const unsigned short port);
 void tcpreuseport(struct socktcp *p);
 void tcpbind(struct socktcp *p);
@@ -32,6 +36,6 @@ void tcpaccept(struct socktcp *p);
 void tcprecv(struct socktcp *p);
 void tcpclose(struct socktcp *p);
 
-int mylisten(int argc, char **argv);
-int myconnect(int argc, char **argv);
+int mylisten();
+int myconnect();
 #endif //GLOBAL_H
